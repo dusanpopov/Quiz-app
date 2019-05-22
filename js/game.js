@@ -18,10 +18,11 @@ fetch(
     return res.json();
   })
   .then(loadedQuestions => {
-    console.log(loadedQuestions.results);
+  
     questions = loadedQuestions.results.map(loadedQuestion => {
-      const formattedQuestion = {
-        question: loadedQuestion.question
+
+      let formattedQuestion = {
+        question: decode(loadedQuestion.question)
       };
 
       const answerChoices = [...loadedQuestion.incorrect_answers];
@@ -36,7 +37,7 @@ fetch(
         formattedQuestion["choice" + (index + 1)] = choice;
       });
 
-      return formattedQuestion;
+       return formattedQuestion;
     });
     startGame();
   });
@@ -45,6 +46,12 @@ fetch(
 
 const CORRECT_BONUS = 10;
 const MAX_QUESTIONS = 10;
+
+function decode(str) {
+  return str.replace(/&#(\d+);/g, function(match, dec) {
+  return String.fromCharCode(dec);
+  });
+  };
 
 function startGame() {
   questionCounter = 0;
